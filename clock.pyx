@@ -88,9 +88,7 @@ e.loop = True
 f.loop = True
 h.loop = True"""
 
-
-val = Value('d',0.0)
-v = VoiceProcessor(val)
+v = VoiceProcessor()
 v.start()
 
 #anims = [a, b, c, d, e, f, g, h]
@@ -144,7 +142,6 @@ class AnimationPerformanceManager(): #because a person pushing a button every mi
         key = kwargs.pop("key", None)
         self.animations.append(anim)
         index = len(self.animations) - 1 
-        print(name, index)
         self.named_animations[name] = index #
         if key:
             self.keybinds[key] = index
@@ -189,19 +186,39 @@ class AnimationPerformanceManager(): #because a person pushing a button every mi
     def cleanup(self):
         self.adapter.stop()
 
+voice_toggle = 0
+voice_db = 0
+def swap_voices(key):
+    global voice_toggle, voice_db
+    if voice_db == 1: return
+    voice_db = 1
+    if voice_toggle == 0:
+        voice_toggle = 1
+        v.val.value = 400
+    elif voice_toggle == 1:
+        voice_toggle = 0
+        v.val.value = -400
+    v.update_flag.value = True
+    time.sleep(1)
+    voice_db = 0
+
 if __name__ == "__main__":
+    keyboard.on_press_key("z", swap_voices)
     a1 = Animation().read_anim_file("animations/sign.doom")
     a2 = Animation().read_anim_file("animations/wooploading.doom")
     a3 = Animation().read_anim_file("animations/woopidle.doom")
+    a4 = Animation().read_anim_file("animations/bomb.doom")
 
     a1.loop = True
     a2.loop = True
     a3.loop = True
+    a4.loop = True
 
     man = AnimationPerformanceManager(num_leds=256, pin=board.D21, pixel_order=neopixel.RGB)
     man.add_animation(a1, "sign", key="0")
     man.add_animation(a2, "loading", key="1")
     man.add_animation(a3, "woopidle", key="2")
+    man.add_animation(a4, "bomb", key="3")
     man.add_timeline(["sign", "loading", "woopidle"], [10000, 10000, 10000], "testtl", key="b")
     try:
         man.run_program()

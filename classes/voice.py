@@ -1,14 +1,16 @@
 import multiprocessing
+from multiprocessing import Value
 from pyo import *
 
 import os
 
 class VoiceProcessor(multiprocessing.Process):
-    def __init__(self, amp_val):
+    def __init__(self):
         super(VoiceProcessor, self).__init__()
         self.daemon = True
         self._terminated = False
-        self.val = amp_val
+        self.val = Value('i', 400)
+        self.update_flag = Value('b', False)
 
     def update_ampl(self, val):
         self.val.value = val
@@ -27,7 +29,7 @@ class VoiceProcessor(multiprocessing.Process):
 
         #a = SfPlayer("../Test1.wav", speed=[1], mul=1)
         a = Input(mul=0.6)
-        fil = FreqShift(a, shift=400, mul=0.8)
+        fil = FreqShift(a, shift=self.val.value, mul=0.8)
         #fil = Biquad(f, freq=2000, q=1, type=0)
 
 
@@ -42,6 +44,9 @@ class VoiceProcessor(multiprocessing.Process):
         # Keeps the process alive...
         while not self._terminated:
             time.sleep(0.001)
+            if self.update_flag.value:
+                fil.setShift(self.val.value)
+                self.update_flag.value = False
 
         self.server.stop()
 

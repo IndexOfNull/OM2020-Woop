@@ -9,7 +9,9 @@ class VoiceProcessor(multiprocessing.Process):
         super(VoiceProcessor, self).__init__()
         self.daemon = True
         self._terminated = False
-        self.val = Value('i', 400)
+        self.val = Value('i', -400)
+        self.audio_source = Value('i', 0)
+        self.current_source = 0
         self.update_flag = Value('b', False)
 
     def update_ampl(self, val):
@@ -20,7 +22,7 @@ class VoiceProcessor(multiprocessing.Process):
         # core must be created in the run() method.
         #self.server = Server(duplex=1, ichnls=1) #do this on everything else
        #self.server = Server(ichnls=1, sr=22050, buffersize=4096) #do this on pi
-        self.server = Server(duplex=1, ichnls=1, nchnls = 2, buffersize=1024)
+        self.server = Server(duplex=1, ichnls=1, nchnls = 2, buffersize=2048)
         #self.server = Server(ichnls=1, buffersize=4096)
         self.server.setInputDevice(2) #2
         self.server.setOutputDevice(0) #1 on mac, 0 on pi
@@ -28,7 +30,9 @@ class VoiceProcessor(multiprocessing.Process):
 
 
         #a = SfPlayer("../Test1.wav", speed=[1], mul=1)
-        a = Input(mul=0.6)
+        sf = SfPlayer("../Bustin.wav", speed=[1], mul=1)
+        sf.stop()
+        a = Input(mul=1)
         fil = FreqShift(a, shift=self.val.value, mul=0.8)
         #fil = Biquad(f, freq=2000, q=1, type=0)
 
@@ -46,7 +50,17 @@ class VoiceProcessor(multiprocessing.Process):
             time.sleep(0.001)
             if self.update_flag.value:
                 fil.setShift(self.val.value)
+                #fil.setInput(SfPlayer("../Bustin.wav", speed=[1], mul=1))
                 self.update_flag.value = False
+                if self.audio_source.value != self.current_source:
+                    self.current_source = self.audio_source.value
+                    if self.audio_source.value == 0:
+                        #fil.setInput(Input(mul=0.6))
+                        sf.stop()
+                        pan.setInput(harm)
+                    else:
+                        pan.setInput(sf)
+                        sf.play()
 
         self.server.stop()
 

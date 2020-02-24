@@ -114,11 +114,15 @@ class AnimationPerformanceManager(): #because a person pushing a button every mi
         self.timeline_playing = None
         self.time_started = None
         self.timer_started = False
-        keyboard.on_press(self.on_key)
+        self.ready = False
+        
 
     def start_timer(self):
         self.time_started = current_milli_time()
         self.timer_started = True
+
+    def name_to_id(self, name):
+        return self.named_animations[name]
 
     def change_animation(self, animid):
         self.current_anim = animid
@@ -155,7 +159,7 @@ class AnimationPerformanceManager(): #because a person pushing a button every mi
 
     def on_key(self, key):
         key = key.name
-        if key == "y": self.start_timer()
+        if key == "q": self.start_timer()
         try:
             if key in self.keybinds:
                 self.change_animation(self.keybinds[key]) 
@@ -165,6 +169,8 @@ class AnimationPerformanceManager(): #because a person pushing a button every mi
             print("ERROR:",e)
 
     def run_program(self):
+        self.ready = True
+        keyboard.on_press(self.on_key)
         self.adapter = DisplayAdapter(self.animations, **self.adapter_options)
         self.adapter.start()
         while True:
@@ -199,15 +205,38 @@ def swap_voices(key):
         voice_toggle = 0
         v.val.value = -400
     v.update_flag.value = True
-    time.sleep(1)
+    time.sleep(0.25)
     voice_db = 0
+
+source_toggle = 0
+source_db = 0
+def swap_sources(key):
+    global source_toggle, source_db
+    if source_db == 1: return
+    source_db = 1
+    if source_toggle == 0:
+        source_toggle = 1
+        v.audio_source.value = 1
+    elif source_toggle == 1:
+        source_toggle = 0
+        v.audio_source.value = 0
+    v.update_flag.value = True
+    time.sleep(0.25)
+    source_db = 0
 
 if __name__ == "__main__":
     keyboard.on_press_key("z", swap_voices)
+    keyboard.on_press_key("p", swap_sources)
     a1 = Animation().read_anim_file("animations/sign.doom")
     a2 = Animation().read_anim_file("animations/wooploading.doom")
     a3 = Animation().read_anim_file("animations/woopidle.doom")
     a4 = Animation().read_anim_file("animations/bomb.doom")
+
+    a5 = Animation().read_anim_file("animations/talking.doom")
+    a6 = Animation().read_anim_file("animations/talkingtransition.doom")
+    a7 = Animation().read_anim_file("animations/quickmaths.doom")
+    a8 = Animation().read_anim_file("animations/darktransition.doom")
+    a9 = Animation().read_anim_file("animations/evilidle.doom")
 
     a1.loop = True
     a2.loop = True
@@ -215,11 +244,43 @@ if __name__ == "__main__":
     a4.loop = True
 
     man = AnimationPerformanceManager(num_leds=256, pin=board.D21, pixel_order=neopixel.RGB)
-    man.add_animation(a1, "sign", key="0")
+    man.add_animation(a1, "sign", key="3")
     man.add_animation(a2, "loading", key="1")
-    man.add_animation(a3, "woopidle", key="2")
-    man.add_animation(a4, "bomb", key="3")
-    man.add_timeline(["sign", "loading", "woopidle"], [10000, 10000, 10000], "testtl", key="b")
+    man.add_animation(a3, "woopidle", key="0")
+    man.add_animation(a4, "bomb", key="9")
+    man.add_animation(a5, "talking")
+    man.add_animation(a6, "talkingtransition")
+    man.add_animation(a7, "quickmaths", key="+")
+    man.add_animation(a8, "darktransition")
+    man.add_animation(a9, "evilidle", key="8")
+
+    tetris = []
+    for i in range(8):
+        tetris.append(Animation().read_anim_file("animations/tetris{0}.doom".format(i)))
+
+    for ind, anim in enumerate(tetris):
+        #anim.loop = True #oopsie woopsie
+        man.add_animation(anim, "tetris"+str(ind))
+
+    #man.add_timeline(["sign", "loading", "woopidle"], [10000, 10000, 10000], "testtl", key="b")
+    man.add_timeline(["tetris0","tetris1","tetris2","tetris3","tetris4","tetris5","tetris6","tetris7"], [60000]*8, "tetrisclock", key="b")
+    
+    def talking(e):
+        trans_id = man.name_to_id("talkingtransition")
+        talk_id = man.name_to_id("talking")
+        man.change_animation(trans_id)
+        time.sleep(2)
+        man.change_animation(talk_id)
+    keyboard.on_press_key("2", talking)
+
+    def evil(e):
+        trans_id = man.name_to_id("darktransition")
+        idle_id = man.name_to_id("evilidle")
+        man.change_animation(trans_id)
+        time.sleep(5)
+        man.change_animation(idle_id)
+    keyboard.on_press_key("7", evil)
+    
     try:
         man.run_program()
     except KeyboardInterrupt:

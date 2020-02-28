@@ -67,43 +67,15 @@ class DisplayAdapter(multiprocessing.Process):
                     else: #even, lines 2,4,6,etc.
                         pindex = (y * self.width) + (self.width - 1 - x)
 
-
-                    """if (y+1) % 2 == 0: #even, lines 0,2,4,etc.
-                        #if x == 0: print("X is ZERO!")
-                        pindex = ((self.width) * (y+1)) - x
-                        #print("even", y-1)
-                        pindex = 255
-                    elif (y+1) % 2 == 1: #odd
-                        pindex = ((self.width) * (y)) + x #THIS IS GOOD
-                        #print("odd", y-1)
-                    #pindex = (((self.width) * (y+1)) - x) - 1"""
                     cindex = y*self.width + x
-                    
-                    """if x == 0:
-                            pindex = y
-                    elif x % 2 != 0:
-                            pindex = x * self.height - y + self.height - 1
-                    else:
-                            pindex = x * self.height + y #multiply by y count"""
-                    #ind2 = ((self.width) * y) + x #Get the equivelant index from the data array.
-                    #print(self.current_frame.value)
-                    #print(len(self.current_anim.raw_frames[self.current_frame.value]), ind2)
-                    #print(x, y, pindex)
+
                     curframe = anim.raw_frames[frame]
                     color = curframe[cindex]
-                    #if color == (255,255,255): print(x, y)
-                    #if color != (0,0,0): print(x, y, pindex, cindex, color)
-                    #if pindex == 91: print(color)
-                    #if color != (0,0,0): print(color, pindex)
-                    #print(color, len(self.current_anim.raw_frames), ind2)
                     #self.pixels[pindex-1] = [int(x * (self.current_anim.brightness/255)) for x in color]
-                    #if color == (255,255,255): color = (0,0,0)
                     self.pixels[pindex] = color #[int(x * 0.02) for x in color] #brightness control
             self.pixels.show()
             #diff = int(round(time.time() * 1000)) - millis
             diff = 0
-            #print("Playing:", self.is_playing.value, " | Current Frame:", self.current_frame.value, " | Current Anim: ", self.current_anim_index.value)
-            #print(diff)
             if self.is_playing.value:
                 sleeptime = anim.delay - (diff/1000)
                 mstimes = int(sleeptime * 1000)

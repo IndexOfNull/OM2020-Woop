@@ -220,8 +220,3 @@ class Animation:
     #Indexing helper
     def __getitem__(self, index):
         return self.frames[index]
-
-class SequencedAnimation():
-
-    def __get__(self, instance, owner):
-        print(instance, owner)

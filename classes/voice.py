@@ -30,7 +30,7 @@ class VoiceProcessor(multiprocessing.Process):
 
 
         #a = SfPlayer("../Test1.wav", speed=[1], mul=1)
-        sf = SfPlayer("../Bustin.wav", speed=[1], mul=1)
+        sf = SfPlayer("../Test1.wav", speed=[1], mul=0.33)
         sf.stop()
         a = Input(mul=1)
         fil = FreqShift(a, shift=self.val.value, mul=0.8)
@@ -40,7 +40,7 @@ class VoiceProcessor(multiprocessing.Process):
         #b = Freeverb(fil, size=[.1,.1], damp=.2, bal=.3)
         #d = Degrade(fil, bitdepth=32, srscale=0.2, mul=0.8)
         #b = Chorus(fil, depth=[1.5,1.6], feedback=0.65, bal=0.8)
-        harm = Harmonizer(fil, transpo=-0.5)
+        harm = Harmonizer(fil, transpo=-0.33)
         pan = Pan(harm).out()
         #sin = Sine(mul=0.25).out()
         #spec = PeakAmp(a,function=self.update_ampl)
@@ -58,8 +58,11 @@ class VoiceProcessor(multiprocessing.Process):
                         #fil.setInput(Input(mul=0.6))
                         sf.stop()
                         pan.setInput(harm)
+                        #fil.setInput(a)
                     else:
                         pan.setInput(sf)
+                        #fil.setInput(sf)
+                        sf.setOffset(59)
                         sf.play()
 
         self.server.stop()

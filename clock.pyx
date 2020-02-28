@@ -198,10 +198,10 @@ def swap_voices(key):
     global voice_toggle, voice_db
     if voice_db == 1: return
     voice_db = 1
-    if voice_toggle == 0:
+    if voice_toggle == 0: #Low
         voice_toggle = 1
-        v.val.value = 400
-    elif voice_toggle == 1:
+        v.val.value = 200
+    elif voice_toggle == 1: #High
         voice_toggle = 0
         v.val.value = -400
     v.update_flag.value = True
@@ -227,6 +227,7 @@ def swap_sources(key):
 if __name__ == "__main__":
     keyboard.on_press_key("z", swap_voices)
     keyboard.on_press_key("p", swap_sources)
+    
     a1 = Animation().read_anim_file("animations/sign.doom")
     a2 = Animation().read_anim_file("animations/wooploading.doom")
     a3 = Animation().read_anim_file("animations/woopidle.doom")
@@ -253,6 +254,8 @@ if __name__ == "__main__":
     man.add_animation(a7, "quickmaths", key="+")
     man.add_animation(a8, "darktransition")
     man.add_animation(a9, "evilidle", key="8")
+
+    keyboard.on_press_key("m", lambda k: man.adapter.stop_anim())
 
     tetris = []
     for i in range(8):

@@ -1,3 +1,11 @@
+# © Damien Kazewych 2020
+# I *SAW* what you were doing
+
+#    /|   /|   /|   /|   /
+#   / |  / |  / |  / |  /  get it? it's a saw wave
+#  /  | /  | /  | /  | / 
+# /   |/   |/   |/   |/
+
 import multiprocessing
 from multiprocessing import Value
 from pyo import *

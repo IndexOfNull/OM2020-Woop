@@ -1,15 +1,25 @@
-#People sometimes make mistakes
-# ~ YES, THEY DO
+
+#© Damien Kazewych 2020
+
+"""
+Is this a game, or is it real?
+
+WHAT'S THE DIFFERENCE?
+
+~ War Games (1983)
+"""
+
 
 import multiprocessing
 from multiprocessing import Value
 import time
 
-try: #See if we're running on a pi or not
+try: #See if we're running on a pi or not and print a funny message
   import RPi.GPIO as gpio
   test_environment = False
 except (ImportError, RuntimeError):
   test_environment = True
+  print("Why would you do this to me!?")
 
 if not test_environment: import board, neopixel
 

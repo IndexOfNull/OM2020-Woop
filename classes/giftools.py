@@ -1,3 +1,5 @@
+#No copyright here, I don't particularly care about this
+
 from PIL import Image
 
 def analyseImage(path):

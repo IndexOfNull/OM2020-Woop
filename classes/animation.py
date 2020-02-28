@@ -1,3 +1,11 @@
+# © Damien Kazewych 2020
+
+# \       
+#  \     _     0
+#   \  _/ \_  /   bouncy balls and pong!
+#    \/     \/
+#----------------------
+
 import glob
 from PIL import Image
 

@@ -106,9 +106,13 @@ class DisplayAdapter(multiprocessing.Process):
     def pause(self):
         self.is_playing.value = False
 
-    def stop_anim(self):
+    def stop_anim(self, *, clear=False):
         self.is_playing.value = False
         self.current_frame.value = 0
+        if clear:
+            for p in range(len(self.pixels)):
+                self.pixels[p] = (0,0,0)
+            self.pixels.show()
 
     def stop(self):
         self.is_playing = False

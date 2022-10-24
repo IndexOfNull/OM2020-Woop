@@ -163,7 +163,7 @@ def swap_sources(key):
 
 if __name__ == "__main__":
     keyboard.on_press_key("z", swap_voices)
-    keyboard.on_press_key("p", swap_sources)
+    #keyboard.on_press_key("p", swap_sources)
     
     a1 = Animation().read_anim_file("animations/sign.doom")
     a2 = Animation().read_anim_file("animations/wooploading.doom")
@@ -192,7 +192,7 @@ if __name__ == "__main__":
     man.add_animation(a8, "darktransition")
     man.add_animation(a9, "evilidle", key="8")
 
-    keyboard.on_press_key("m", lambda k: man.adapter.stop_anim())
+    keyboard.on_press_key("m", lambda k: man.adapter.stop_anim(clear=True))
 
     tetris = []
     for i in range(8):

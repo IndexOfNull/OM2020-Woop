@@ -29,7 +29,7 @@ class VoiceProcessor(multiprocessing.Process):
         # All code that should run on a separated
         # core must be created in the run() method.
         #self.server = Server(duplex=1, ichnls=1) #do this on everything else
-       #self.server = Server(ichnls=1, sr=22050, buffersize=4096) #do this on pi
+        #self.server = Server(ichnls=1, sr=22050, buffersize=4096) #do this on pi
         self.server = Server(duplex=1, ichnls=1, nchnls = 2, buffersize=2048)
         #self.server = Server(ichnls=1, buffersize=4096)
         self.server.setInputDevice(2) #2

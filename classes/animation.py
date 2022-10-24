@@ -12,12 +12,6 @@ from PIL import Image
 from classes import giftools
 
 class Animation:
-    """cdef int image_width, image_height, interframe_enabled, brightness, individual_frame_time
-    cdef double delay
-    cdef list frames
-    cdef list raw_frames
-    cdef str dir"""
-
 
     def __init__(self, **kwargs):
         self.dir = kwargs.pop('dir', None)
@@ -80,12 +74,6 @@ class Animation:
             pixel_len = 7 if interframe else 3
             d = []
             while read_head < len(frame):
-                """if not interframe:
-                    index = None
-                else:
-                    index = int.from_bytes(frame[read_head:read_head+4], 'little') #read the first four bytes
-                    #print(data[read_head:read_head+4], index)"""
-                index = None
                 read_head -= 4 #Do this because im not implementing interframe right now (are maybe anymore)
                 r = int.from_bytes(frame[read_head+4:read_head+5], 'little')
                 g = int.from_bytes(frame[read_head+5:read_head+6], 'little')
@@ -139,7 +127,7 @@ class Animation:
         headers = [] #Headers so we can automatically detect how to read the file back
 
         #header layout (fixed length)
-        #00 00 00 00 00 00 00 00 00 00 00 .. .. .. (the rest of the encoded data goes here depedning on param #6)
+        #00 00 00 00 00 00 00 00 00 00 00 .. .. .. (the rest of the encoded data goes here depending on param #6)
         #|_1_| |_2_| |_3_| |_4_| 5  6  7
         #1: Frame count (2 bytes)
         #2: DISPLAY_WIDTH (2 bytes)
@@ -194,20 +182,7 @@ class Animation:
             self.image_width = self.frames[0].size[0]
 
     def open_gif(self, dir, **kwargs): #We have to average frame durations because I suck
-        #gif = Image.open(dir)
-        #gif.seek(0)
-        #frames = duration = 0
         imdata = giftools.processImage(dir)
-        """framelist = []
-        while True:
-            try:
-                frames += 1
-                duration += gif.info['duration']
-                framelist.append(gif.convert("P").convert("RGB"))
-                gif.seek(gif.tell() + 1) #Go forward a frame
-            except EOFError:
-                duration = frames / duration #Give the average speed
-                break"""
         duration = kwargs.pop('duration', imdata[1])
         framelist = imdata[0]
         self.image_width, self.image_height = framelist[0].width, framelist[0].height

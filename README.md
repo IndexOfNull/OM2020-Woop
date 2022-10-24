@@ -6,7 +6,7 @@ This is the code for a part of my Odyssey of the Mind performance in 2020. This 
 
 # Guide
 
-If you want to run this code on your own Woop™, there's some things you're going to want to know. First, you'll want to `pip install pyo pillow keyboard`. Be sure you've also installed run Adafruits CircuitPython script (otherwise `board` will not be a recognized module). Second, you'll probably want ImageMagick installed to split your .GIFs into coalesced frames (using `giftoframes.sh`).
+If you want to run this code on your own Woop™, there's some things you're going to want to know. First, you'll want to `pip install pyo pillow keyboard`. Be sure you've also run Adafruits CircuitPython script (otherwise `board` will not be a recognized module). Second, you'll may want ImageMagick installed to split your .GIFs into coalesced frames (using `giftoframes.sh`).
 
 Connect your WS2812B lights to Pin 21 of your RPi3. Also, you'll need a USB microphone and keyboard plugged into the USB ports.
 

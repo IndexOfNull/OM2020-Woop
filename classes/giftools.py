@@ -1,4 +1,4 @@
-#No copyright here, I don't particularly care about this
+#No copyright here
 
 from PIL import Image
 
